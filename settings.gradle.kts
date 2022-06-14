@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Daily Tasks"
-include ':app'
+include(":app")
