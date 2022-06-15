@@ -1,4 +1,4 @@
-package com.ismailaamassi.dailytasks
+package com.ismailaamassi.dailytasks.core.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
