@@ -4,8 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
-import com.ismailaamassi.dailytasks.data.local.DailyTaskDatabase
-import com.ismailaamassi.dailytasks.domain.Constants
+import com.ismailaamassi.dailytasks.core.data.DailyTaskDatabase
+import com.ismailaamassi.dailytasks.core.domain.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
