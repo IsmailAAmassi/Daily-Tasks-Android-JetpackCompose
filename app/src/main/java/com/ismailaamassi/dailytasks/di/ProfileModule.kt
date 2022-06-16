@@ -12,22 +12,11 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object ApiModule {
+object ProfileModule {
 
     @Singleton
     @Provides
-    fun provideAuthApi(retrofit: Retrofit.Builder): AuthApi =
-        retrofit.build().create(AuthApi::class.java)
-
-
-    @Singleton
-    @Provides
-    fun provideUserApi(retrofit: Retrofit.Builder): ProfileApi =
+    fun provideProfileApi(retrofit: Retrofit.Builder): ProfileApi =
         retrofit.build().create(ProfileApi::class.java)
 
-
-    @Singleton
-    @Provides
-    fun provideTaskApi(retrofit: Retrofit.Builder): TaskApi =
-        retrofit.build().create(TaskApi::class.java)
 }

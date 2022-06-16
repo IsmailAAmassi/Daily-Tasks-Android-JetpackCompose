@@ -1,34 +1,49 @@
 package com.ismailaamassi.dailytasks.core.presentation
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import com.ismailaamassi.dailytasks.core.presentation.theme.DailyTasksTheme
+import com.ismailaamassi.dailytasks.core.presentation.ui.theme.DailyTasksTheme
 import com.ismailaamassi.dailytasks.feature_auth.presentation.NavGraphs
+import com.ismailaamassi.dailytasks.feature_auth.presentation.destinations.LoginScreenDestination
+import com.ismailaamassi.dailytasks.feature_auth.presentation.login.LoginScreen
 import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.manualcomposablecalls.composable
 import dagger.hilt.android.AndroidEntryPoint
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             DailyTasksTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    DestinationsNavHost(navGraph = NavGraphs.root)
+                    val scaffoldState = rememberScaffoldState()
+                    Scaffold(
+                        scaffoldState = scaffoldState,
+                    ) {
+                        DestinationsNavHost(navGraph = NavGraphs.root) {
+                            composable(LoginScreenDestination) {
+                                LoginScreen(
+                                    scaffoldState = scaffoldState,
+                                    navigator = destinationsNavigator
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }

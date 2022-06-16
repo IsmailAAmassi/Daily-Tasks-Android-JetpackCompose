@@ -4,16 +4,15 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
+import com.google.gson.Gson
 import com.ismailaamassi.dailytasks.core.data.DailyTaskDatabase
-import com.ismailaamassi.dailytasks.core.domain.Constants
+import com.ismailaamassi.dailytasks.core.util.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -23,12 +22,39 @@ object AppModule {
     @Provides
     @Singleton
     fun provideSharedPref(app: Application): SharedPreferences {
-        return app.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        return app.getSharedPreferences(
+            Constants.SHARED_PREF_NAME,
+            Context.MODE_PRIVATE
+        )
     }
 
     @Provides
     @Singleton
-    fun provideStockDatabase(app: Application): DailyTaskDatabase {
+    fun provideOkHttpClient(sharedPreferences: SharedPreferences): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor {
+                val token = sharedPreferences.getString(Constants.KEY_JWT_TOKEN, "")
+                val modifiedRequest = it.request().newBuilder()
+                    .addHeader("Authorization", "Bearer $token")
+                    .build()
+                it.proceed(modifiedRequest)
+            }
+            .addInterceptor(
+                HttpLoggingInterceptor()
+                    .apply {
+                        level = HttpLoggingInterceptor.Level.BODY
+                    }
+            )
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS)
+            .build()
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideDailyTaskDatabase(app: Application): DailyTaskDatabase {
         return Room.databaseBuilder(
             app,
             DailyTaskDatabase::class.java,
@@ -36,24 +62,10 @@ object AppModule {
         ).build()
     }
 
-
-    @Singleton
     @Provides
-    fun provideRetrofit(): Retrofit.Builder {
-        val okHttpClient = OkHttpClient.Builder()
-            .callTimeout(10, TimeUnit.SECONDS)
-            .addInterceptor(HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BASIC
-            })
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(10, TimeUnit.SECONDS)
-            .build()
-
-        return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL.plus(Constants.API_VERSION))
-            .addConverterFactory(MoshiConverterFactory.create())
-            .client(okHttpClient)
+    @Singleton
+    fun provideGson(): Gson {
+        return Gson()
     }
 
 }

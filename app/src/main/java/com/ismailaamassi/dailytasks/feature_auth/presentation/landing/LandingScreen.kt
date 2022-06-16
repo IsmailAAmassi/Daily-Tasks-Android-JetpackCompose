@@ -18,6 +18,6 @@ fun LandingScreen(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = "Landing Page")
+        Text(text = "LandingScreen")
     }
 }

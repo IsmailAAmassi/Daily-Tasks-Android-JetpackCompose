@@ -1,5 +1,6 @@
 package com.ismailaamassi.dailytasks.feature_auth.presentation.splash
 
+import android.view.animation.AccelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -18,36 +19,52 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ismailaamassi.dailytasks.R
-import com.ismailaamassi.dailytasks.core.util.Constants
-import com.ismailaamassi.dailytasks.feature_auth.presentation.destinations.LandingScreenDestination
-import com.ismailaamassi.dailytasks.feature_auth.presentation.destinations.SplashScreenDestination
+import com.ismailaamassi.dailytasks.core.util.UiEvent
+import com.ismailaamassi.dailytasks.feature_auth.presentation.destinations.DirectionDestination
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 
-@Destination(start = true)
+@RootNavGraph(start = true)
+@Destination
 @Composable
 fun SplashScreen(
-    navigator: DestinationsNavigator? = null,
-    viewModel: SplashViewModel = hiltViewModel()
+    navigator: DestinationsNavigator,
+    viewModel: SplashViewModel = hiltViewModel(),
+    onPopBackStack: () -> Unit = {
+        navigator.popBackStack()
+    },
+    onNavigate: (DirectionDestination) -> Unit = {
+        navigator.navigate(it)
+    },
 ) {
 
     val scale = remember { Animatable(0f) }
-    val overshootInterpolator = remember { OvershootInterpolator(2f) }
+    val overshootInterpolator = remember { OvershootInterpolator(2.0f) }
 
     LaunchedEffect(key1 = true) {
         scale.animateTo(
-            targetValue = 0.5f,
+            targetValue = 1.0f,
             animationSpec = tween(
-                durationMillis = 2000,
+                durationMillis = 1500,
                 easing = {
                     overshootInterpolator.getInterpolation(it)
                 }
             )
         )
-        delay(Constants.SPLASH_SCREEN_DELAY)
-        navigator?.popBackStack()
-        navigator?.navigate(LandingScreenDestination)
+    }
+
+    LaunchedEffect(key1 = true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is UiEvent.Navigate -> {
+                    onPopBackStack()
+                    onNavigate(event.destination)
+                }
+                else -> Unit
+            }
+        }
     }
     Surface(
         modifier = Modifier
@@ -71,5 +88,5 @@ fun SplashScreen(
 @Preview(showBackground = true)
 @Composable
 fun SplashScreenPreview() {
-    SplashScreen()
+
 }
