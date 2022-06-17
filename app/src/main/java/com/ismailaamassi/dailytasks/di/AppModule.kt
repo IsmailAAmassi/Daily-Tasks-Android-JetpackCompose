@@ -8,18 +8,15 @@ import com.google.gson.Gson
 import com.ismailaamassi.dailytasks.core.data.DailyTaskDatabase
 import com.ismailaamassi.dailytasks.core.domain.repository.DataStoreRepository
 import com.ismailaamassi.dailytasks.core.util.Constants
+import com.ismailaamassi.dailytasks.core.util.task_checker.DefaultTaskChecker
+import com.ismailaamassi.dailytasks.core.util.task_checker.TaskChecker
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import io.bloco.faker.Faker
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Module
@@ -80,14 +77,20 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideTaskChecker(): TaskChecker {
+        return DefaultTaskChecker()
+    }
+
+    @Provides
+    @Singleton
     fun provideGson(): Gson {
         return Gson()
     }
 
-   /* @Provides
-    @Singleton
-    fun provideFaker(): Faker {
-        return Faker()
-    }*/
+    /* @Provides
+     @Singleton
+     fun provideFaker(): Faker {
+         return Faker()
+     }*/
 
 }

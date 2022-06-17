@@ -15,4 +15,11 @@ interface TaskRepository {
 
     suspend fun getTasks(page: Int, pageSize: Int): Resource<List<TaskData>>
 
+    suspend fun checkTask(taskId:String): SimpleResource
+
+    suspend fun uncheckTask(taskId:String): SimpleResource
+
+    suspend fun deleteTask(taskId:String): SimpleResource
+    suspend fun updateTask(taskId:String): SimpleResource
+    suspend fun getTask(taskId:String): SimpleResource
 }

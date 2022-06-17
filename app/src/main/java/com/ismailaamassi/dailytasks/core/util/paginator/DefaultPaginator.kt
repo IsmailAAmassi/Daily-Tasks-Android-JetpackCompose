@@ -3,6 +3,7 @@ package com.ismailaamassi.dailytasks.core.util.paginator
 import com.ismailaamassi.dailytasks.core.util.Resource
 import com.ismailaamassi.dailytasks.core.util.UiText
 import com.plcoding.socialnetworktwitch.core.util.Paginator
+import kotlinx.coroutines.delay
 
 class DefaultPaginator<T>(
     private val onLoadUpdated: (Boolean) -> Unit,
@@ -15,6 +16,8 @@ class DefaultPaginator<T>(
 
     override suspend fun loadNextItems() {
         onLoadUpdated(true)
+        // TODO: REMOVE DELAY
+        delay(1000)
         when(val result = onRequest(page)) {
             is Resource.Success -> {
                 val items = result.data ?: emptyList()

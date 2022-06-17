@@ -27,7 +27,7 @@ data class TaskData(
     val createdAt: Long,
     val updatedAt: Long,
     @ColumnInfo(name = "profile_id", index = true)
-    val profileId: String,
+    val userId: String,
     @NonNull @PrimaryKey
     val id: String,
 )

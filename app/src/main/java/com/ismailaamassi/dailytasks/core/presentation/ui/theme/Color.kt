@@ -9,3 +9,5 @@ val Teal200 = Color(0xFF03DAC5)
 
 val SecondaryColor = Color(0xffF8952E)
 val TextColor = Color.Unspecified/*Color(0xFF000000)*/
+
+val CheckedColor = Color.LightGray/*.copy(alpha = 0.8f)*/

@@ -13,19 +13,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.ismailaamassi.dailytasks.core.presentation.ui.theme.CheckedColor
 
 @Composable
 fun CircleCheckbox(
     modifier: Modifier = Modifier,
-    selected: Boolean,
+    checked: Boolean,
     enabled: Boolean = true,
     onChecked: () -> Unit
 ) {
 
     val color = MaterialTheme.colors
-    val imageVector = if (selected) Icons.Filled.CheckCircle else Icons.Outlined.Circle
-    val tint = if (selected) Color.LightGray.copy(alpha = 0.8f) else Color.LightGray.copy(alpha = 0.8f)
-    val background = if (selected) Color.White else Color.Transparent
+    val imageVector = if (checked) Icons.Filled.CheckCircle else Icons.Outlined.Circle
+    val tint = if (checked) CheckedColor else Color.LightGray.copy(alpha = 0.8f)
+    val background = if (checked) Color.White else Color.Transparent
 
     IconButton(
         modifier = Modifier

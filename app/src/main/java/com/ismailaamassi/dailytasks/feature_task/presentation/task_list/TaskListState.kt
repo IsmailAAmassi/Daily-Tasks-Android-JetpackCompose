@@ -1,4 +1,3 @@
 package com.ismailaamassi.dailytasks.feature_task.presentation.task_list
 
-class TaskListState {
-}
+data class TaskListState(val isLoading: Boolean = false)

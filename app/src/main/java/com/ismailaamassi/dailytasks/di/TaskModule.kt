@@ -1,13 +1,13 @@
 package com.ismailaamassi.dailytasks.di
 
 import android.content.SharedPreferences
+import com.google.gson.Gson
 import com.ismailaamassi.dailytasks.core.domain.repository.DataStoreRepository
 import com.ismailaamassi.dailytasks.core.util.Constants
-import com.ismailaamassi.dailytasks.feature_auth.domain.repository.AuthRepository
-import com.ismailaamassi.dailytasks.feature_auth.domain.use_case.LoginUseCase
 import com.ismailaamassi.dailytasks.feature_task.data.remote.TaskApi
 import com.ismailaamassi.dailytasks.feature_task.data.repository.TaskRepositoryImpl
 import com.ismailaamassi.dailytasks.feature_task.domain.repository.TaskRepository
+import com.ismailaamassi.dailytasks.feature_task.domain.use_case.ChangeCheckTaskUseCase
 import com.ismailaamassi.dailytasks.feature_task.domain.use_case.CreateTaskUseCase
 import com.ismailaamassi.dailytasks.feature_task.domain.use_case.GetTasksUseCase
 import dagger.Module
@@ -38,10 +38,11 @@ object TaskModule {
     @Singleton
     fun provideTaskRepository(
         api: TaskApi,
+        gson: Gson,
         dataStoreRepository: DataStoreRepository,
         sharedPreferences: SharedPreferences
     ): TaskRepository {
-        return TaskRepositoryImpl(api, dataStoreRepository, sharedPreferences)
+        return TaskRepositoryImpl(api,gson, dataStoreRepository, sharedPreferences)
     }
 
     @Provides
@@ -54,6 +55,11 @@ object TaskModule {
     @Singleton
     fun provideGetTasksUseCase(repository: TaskRepository): GetTasksUseCase {
         return GetTasksUseCase(repository)
+    }
+    @Provides
+    @Singleton
+    fun provideChangeCheckTaskUseCase(repository: TaskRepository): ChangeCheckTaskUseCase {
+        return ChangeCheckTaskUseCase(repository)
     }
 
 }

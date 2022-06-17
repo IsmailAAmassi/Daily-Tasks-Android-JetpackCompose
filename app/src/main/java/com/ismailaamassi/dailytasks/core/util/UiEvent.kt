@@ -2,7 +2,7 @@ package com.ismailaamassi.dailytasks.core.util
 
 import com.ismailaamassi.dailytasks.destinations.DirectionDestination
 
-sealed class UiEvent {
+sealed class UiEvent: Event() {
     data class Navigate(val destination: DirectionDestination): UiEvent()
     data class ShowSnackbar(
         val uiText: UiText,

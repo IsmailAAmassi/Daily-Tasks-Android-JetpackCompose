@@ -14,18 +14,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ismailaamassi.dailytasks.core.presentation.components.StandardLoadingAnimation
 import com.ismailaamassi.dailytasks.core.presentation.ui.theme.SpaceLarge
 import com.ismailaamassi.dailytasks.core.presentation.ui.theme.SpaceSmall
 import com.ismailaamassi.dailytasks.core.presentation.util.asString
 import com.ismailaamassi.dailytasks.core.util.UiEvent
 import com.ismailaamassi.dailytasks.destinations.CreateTaskScreenDestination
 import com.ismailaamassi.dailytasks.destinations.DirectionDestination
-import com.ismailaamassi.dailytasks.feature_task.data.local.TaskData
 import com.ismailaamassi.dailytasks.feature_task.presentation.task_list.compnenets.ProfileSection
 import com.ismailaamassi.dailytasks.feature_task.presentation.task_list.compnenets.TaskItem
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 
 //@Inject lateinit var faker: Faker
 
@@ -39,26 +40,9 @@ fun TaskListScreen(
     onNavigate: (DirectionDestination) -> Unit = { navigator.navigate(it) }
 ) {
 
-    val pagingState = viewModel.pagingState.value
+    val pagingState = viewModel.pagingState
     val context = LocalContext.current
 
-    val fakeTasks = mutableListOf<TaskData>()
-    repeat(10) { i ->
-        fakeTasks.add(
-            TaskData(
-                title = "Title $i ",
-                description = "Description $i, Description $i Description $i Description $i",
-                category = "Category ${i % 3}",
-                status = false,
-                priority = 1,
-                time = -1L,
-                createdAt = -1L,
-                updatedAt = -1L,
-                profileId = "profileId 1",
-                id = "id $i"
-            )
-        )
-    }
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { uiEvent ->
@@ -103,27 +87,36 @@ fun TaskListScreen(
                     ProfileSection(name = "Coach")
 
                     LazyColumn(modifier = Modifier.padding(SpaceSmall)) {
-                        items(fakeTasks.size) { i ->
-//                            val currentTask = fakeTasks[i]
+                        items(pagingState.items.size) { i ->
                             val currentTask = pagingState.items[i]
+                            Timber.tag("LazyColumn").d("TaskListScreen : Task $i status ${currentTask.status}")
                             if (i >= pagingState.items.size - 1 && !pagingState.endReached && !pagingState.isLoading) {
                                 viewModel.loadNextTodos()
                             }
-                            TaskItem(taskData = currentTask)
-                            if (i < pagingState.items.size - 1) {
-                                Spacer(modifier = Modifier.height(SpaceLarge))
-                            }
+                            TaskItem(
+                                taskData = currentTask,
+                                onCheckedChange = {
+                                    viewModel.onEvent(TaskListEvent.TaskCheckedChange(currentTask.id))
+                                },
+                                onUpdate = {
+                                    onNavigate(CreateTaskScreenDestination)
+                                }
+                            )
                         }
                         item {
-                            Spacer(modifier = Modifier.height(SpaceLarge.times(3)))
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Spacer(modifier = Modifier.height(SpaceLarge.times(3)))
+                                if (pagingState.isLoading) {
+                                    StandardLoadingAnimation()
+                                }
+                            }
                         }
                     }
 
-                    if (pagingState.isLoading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
-                    }
+
                 }
             }
         }
