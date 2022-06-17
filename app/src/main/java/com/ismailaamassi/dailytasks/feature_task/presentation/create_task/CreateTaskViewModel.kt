@@ -1,5 +1,6 @@
 package com.ismailaamassi.dailytasks.feature_task.presentation.create_task
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,7 +8,8 @@ import com.ismailaamassi.dailytasks.core.domain.states.StandardTextFieldState
 import com.ismailaamassi.dailytasks.core.util.Resource
 import com.ismailaamassi.dailytasks.core.util.UiEvent
 import com.ismailaamassi.dailytasks.core.util.UiText
-import com.ismailaamassi.dailytasks.feature_task.domain.use_case.CreateTaskUseCase
+import com.ismailaamassi.dailytasks.feature_task.data.local.TaskData
+import com.ismailaamassi.dailytasks.feature_task.domain.use_case.TaskUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -16,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateTaskViewModel @Inject constructor(
-    private val createTaskUseCase: CreateTaskUseCase,
+    private val taskUseCase: TaskUseCases,
 ) : ViewModel() {
 
     var titleState = mutableStateOf(StandardTextFieldState())
@@ -26,6 +28,8 @@ class CreateTaskViewModel @Inject constructor(
     var categoryState = mutableStateOf(StandardTextFieldState())
         private set
 
+    var currentTask = MutableSharedFlow<TaskData>()
+        private set
 
     var createTaskState = mutableStateOf(CreateTaskState(isLoading = false))
 
@@ -46,19 +50,19 @@ class CreateTaskViewModel @Inject constructor(
             is CreateTaskEvent.EnteredPriority -> Unit
             is CreateTaskEvent.EnteredTime -> Unit
             is CreateTaskEvent.CreateTask -> {
-                onCreateTask()
+                createTask()
             }
         }
     }
 
-    private fun onCreateTask() {
+    private fun createTask() {
         viewModelScope.launch {
             titleState.value = titleState.value.copy(error = null)
             descriptionState.value = descriptionState.value.copy(error = null)
             categoryState.value = categoryState.value.copy(error = null)
 
             createTaskState.value = createTaskState.value.copy(isLoading = true)
-            val createTaskResult = createTaskUseCase(
+            val createTaskResult = taskUseCase.createTaskUseCase(
                 title = titleState.value.text,
                 description = descriptionState.value.text,
                 category = categoryState.value.text,
@@ -102,6 +106,12 @@ class CreateTaskViewModel @Inject constructor(
             }
 
             createTaskState.value = createTaskState.value.copy(isLoading = false)
+        }
+    }
+
+    fun loadTaskData(taskId: String) {
+        viewModelScope.launch {
+
         }
     }
 }

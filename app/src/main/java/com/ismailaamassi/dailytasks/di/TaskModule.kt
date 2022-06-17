@@ -7,9 +7,7 @@ import com.ismailaamassi.dailytasks.core.util.Constants
 import com.ismailaamassi.dailytasks.feature_task.data.remote.TaskApi
 import com.ismailaamassi.dailytasks.feature_task.data.repository.TaskRepositoryImpl
 import com.ismailaamassi.dailytasks.feature_task.domain.repository.TaskRepository
-import com.ismailaamassi.dailytasks.feature_task.domain.use_case.ChangeCheckTaskUseCase
-import com.ismailaamassi.dailytasks.feature_task.domain.use_case.CreateTaskUseCase
-import com.ismailaamassi.dailytasks.feature_task.domain.use_case.GetTasksUseCase
+import com.ismailaamassi.dailytasks.feature_task.domain.use_case.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,24 +40,20 @@ object TaskModule {
         dataStoreRepository: DataStoreRepository,
         sharedPreferences: SharedPreferences
     ): TaskRepository {
-        return TaskRepositoryImpl(api,gson, dataStoreRepository, sharedPreferences)
+        return TaskRepositoryImpl(api, gson, dataStoreRepository, sharedPreferences)
     }
 
     @Provides
     @Singleton
-    fun provideCreateTaskUseCase(repository: TaskRepository): CreateTaskUseCase {
-        return CreateTaskUseCase(repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideGetTasksUseCase(repository: TaskRepository): GetTasksUseCase {
-        return GetTasksUseCase(repository)
-    }
-    @Provides
-    @Singleton
-    fun provideChangeCheckTaskUseCase(repository: TaskRepository): ChangeCheckTaskUseCase {
-        return ChangeCheckTaskUseCase(repository)
+    fun provideTasksUseCase(repository: TaskRepository): TaskUseCases {
+        return TaskUseCases(
+            changeCheckTaskUseCase = ChangeCheckTaskUseCase(repository),
+            createTaskUseCase = CreateTaskUseCase(repository = repository),
+            deleteTaskUseCase = DeleteTaskUseCase(repository = repository),
+            getTasksUseCase = GetTasksUseCase(repository = repository),
+            restoreTaskUseCase = RestoreTaskUseCase(repository = repository),
+            updateTaskUseCase = UpdateTaskUseCase(repository = repository)
+        )
     }
 
 }

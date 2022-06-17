@@ -19,10 +19,10 @@ import com.ismailaamassi.dailytasks.feature_profile.data.local.ProfileData
 )
 data class TaskData(
     val title: String,
-    val description: String,
+    val description: String?,
     val category: String,
     val status: Boolean,
-    val priority: Int,
+    val priority: Int = 1,
     val time: Long,
     val createdAt: Long,
     val updatedAt: Long,

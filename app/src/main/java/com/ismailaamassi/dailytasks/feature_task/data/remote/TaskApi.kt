@@ -14,6 +14,11 @@ interface TaskApi {
         @Body request: CreateTaskRequest
     ): BasicApiResponse<Unit>
 
+    @POST("tasks/restore")
+    suspend fun restoreTask(
+        @Body taskData: TaskData
+    ): BasicApiResponse<Unit>
+
     @GET("tasks")
     suspend fun getTasks(
         @Query("page") page: Int,
@@ -38,6 +43,6 @@ interface TaskApi {
     @DELETE("tasks/{taskId}")
     suspend fun deleteTask(
         @Path("taskId") taskId: String
-    ): BasicApiResponse<Unit>
+    ): BasicApiResponse<TaskData>
 
 }

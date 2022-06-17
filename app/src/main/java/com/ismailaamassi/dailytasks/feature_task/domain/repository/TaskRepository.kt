@@ -13,13 +13,17 @@ interface TaskRepository {
         time: Long
     ): SimpleResource
 
+    suspend fun restoreTask(
+        taskData: TaskData
+    ): SimpleResource
+
     suspend fun getTasks(page: Int, pageSize: Int): Resource<List<TaskData>>
 
-    suspend fun checkTask(taskId:String): SimpleResource
+    suspend fun checkTask(taskId: String): SimpleResource
 
-    suspend fun uncheckTask(taskId:String): SimpleResource
+    suspend fun uncheckTask(taskId: String): SimpleResource
 
-    suspend fun deleteTask(taskId:String): SimpleResource
-    suspend fun updateTask(taskId:String): SimpleResource
-    suspend fun getTask(taskId:String): SimpleResource
+    suspend fun deleteTask(taskId: String): Resource<TaskData>
+    suspend fun updateTask(taskId: String): SimpleResource
+    suspend fun getTask(taskId: String): SimpleResource
 }

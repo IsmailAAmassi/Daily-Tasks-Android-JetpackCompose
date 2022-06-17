@@ -24,7 +24,6 @@ class TaskRepositoryImpl @Inject constructor(
     private val dataStoreRepository: DataStoreRepository,
     private val sharedPreferences: SharedPreferences
 ) : TaskRepository {
-
     override suspend fun createTask(
         title: String,
         description: String,
@@ -35,6 +34,27 @@ class TaskRepositoryImpl @Inject constructor(
         val request = CreateTaskRequest(title, description, category, priority, time)
         return try {
             val response = api.createTask(request)
+            if (response.successful) {
+                Resource.Success(Unit)
+            } else {
+                response.message?.let { msg ->
+                    Resource.Error(uiText = UiText.DynamicString(msg))
+                } ?: Resource.Error(uiText = UiText.StringResource(R.string.error_unknown))
+            }
+        } catch (e: IOException) {
+            Resource.Error(
+                uiText = UiText.StringResource(R.string.error_couldnt_reach_server)
+            )
+        } catch (e: HttpException) {
+            Resource.Error(
+                uiText = UiText.StringResource(R.string.error_oops_something_went_wrong)
+            )
+        }
+    }
+
+    override suspend fun restoreTask(taskData: TaskData): SimpleResource {
+        return try {
+            val response = api.restoreTask(taskData)
             if (response.successful) {
                 Resource.Success(Unit)
             } else {
@@ -115,8 +135,25 @@ class TaskRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteTask(taskId: String): SimpleResource {
-        TODO("Not yet implemented")
+    override suspend fun deleteTask(taskId: String): Resource<TaskData> {
+        return try {
+            val response = api.deleteTask(taskId)
+            if (response.successful) {
+                Resource.Success(response.data)
+            } else {
+                response.message?.let { msg ->
+                    Resource.Error(uiText = UiText.DynamicString(msg))
+                } ?: Resource.Error(uiText = UiText.StringResource(R.string.error_unknown))
+            }
+        } catch (e: IOException) {
+            Resource.Error(
+                uiText = UiText.StringResource(R.string.error_couldnt_reach_server)
+            )
+        } catch (e: HttpException) {
+            Resource.Error(
+                uiText = UiText.StringResource(R.string.error_oops_something_went_wrong)
+            )
+        }
     }
 
     override suspend fun updateTask(taskId: String): SimpleResource {

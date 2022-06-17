@@ -18,8 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ismailaamassi.dailytasks.R
-import com.ismailaamassi.dailytasks.core.presentation.ui.theme.CheckedColor
-import com.ismailaamassi.dailytasks.core.presentation.ui.theme.SpaceSmall
+import com.ismailaamassi.dailytasks.core.presentation.ui.theme.*
 import com.ismailaamassi.dailytasks.feature_task.data.local.TaskData
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
@@ -29,9 +28,8 @@ import me.saket.swipe.SwipeableActionsBox
 fun TaskItem(
     taskData: TaskData,
     onCheckedChange: () -> Unit,
-    onDelete: (String) -> Unit = {
-    },
-    onUpdate: (String) -> Unit = {}
+    onDelete: () -> Unit,
+    onUpdate: () -> Unit
 ) {
     val checkedState = taskData.status
 
@@ -39,14 +37,14 @@ fun TaskItem(
         icon = painterResource(id = R.drawable.ic_baseline_delete_sweep_24),
         background = Color.Red,
         isUndo = true,
-        onSwipe = { /*onDelete(taskData.id)*/ }
+        onSwipe = { onDelete() }
     )
 
     val editSwipeAction = SwipeAction(
         icon = painterResource(id = R.drawable.ic_baseline_edit_24),
         isUndo = false,
         background = Color.Blue,
-        onSwipe = { /*onUpdate(taskData.id)*/ },
+        onSwipe = { onUpdate() },
     )
     SwipeableActionsBox(
         modifier = Modifier
@@ -97,7 +95,7 @@ fun TaskItem(
                             end = 16.dp,
                             bottom = 8.dp
                         ),
-                        text = taskData.description,
+                        text = taskData.description?:"",
                         maxLines = 2,
                         fontWeight = FontWeight.Light,
                         overflow = TextOverflow.Ellipsis,
@@ -113,10 +111,10 @@ fun TaskItem(
 @Composable
 fun CategoryLabel(category: String, priority: Int) {
     val catColor = when (priority) {
-        1 -> Color.Green
-        2 -> Color.Cyan
-        3 -> Color.Red
-        else -> Color.Blue
+        0, 1 -> LOW_PRIORITY
+        2 -> MEDIUM_PRIORITY
+        3 -> HIGH_PRIORITY
+        else -> DEFAULT_PRIORITY
     }
     Text(
         modifier = Modifier

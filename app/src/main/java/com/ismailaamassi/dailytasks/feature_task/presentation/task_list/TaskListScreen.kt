@@ -20,11 +20,11 @@ import com.ismailaamassi.dailytasks.core.presentation.ui.theme.SpaceSmall
 import com.ismailaamassi.dailytasks.core.presentation.util.asString
 import com.ismailaamassi.dailytasks.core.util.UiEvent
 import com.ismailaamassi.dailytasks.destinations.CreateTaskScreenDestination
-import com.ismailaamassi.dailytasks.destinations.DirectionDestination
 import com.ismailaamassi.dailytasks.feature_task.presentation.task_list.compnenets.ProfileSection
 import com.ismailaamassi.dailytasks.feature_task.presentation.task_list.compnenets.TaskItem
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.spec.Direction
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
@@ -37,7 +37,7 @@ fun TaskListScreen(
     scaffoldState: ScaffoldState,
     navigator: DestinationsNavigator,
     viewModel: TaskListViewModel = hiltViewModel(),
-    onNavigate: (DirectionDestination) -> Unit = { navigator.navigate(it) }
+    onNavigate: (Direction) -> Unit = { navigator.navigate(it) }
 ) {
 
     val pagingState = viewModel.pagingState
@@ -48,9 +48,15 @@ fun TaskListScreen(
         viewModel.eventFlow.collectLatest { uiEvent ->
             when (uiEvent) {
                 is UiEvent.Navigate -> onNavigate(uiEvent.destination)
-                is UiEvent.ShowSnackbar -> scaffoldState.snackbarHostState.showSnackbar(
-                    message = uiEvent.uiText.asString(context)
-                )
+                is UiEvent.ShowSnackbar -> {
+                    val actionClickResult = scaffoldState.snackbarHostState.showSnackbar(
+                        message = uiEvent.uiText.asString(context),
+                        actionLabel = uiEvent.action
+                    )
+                    if(actionClickResult == SnackbarResult.ActionPerformed) {
+                        viewModel.onEvent(TaskListEvent.TaskRestore)
+                    }
+                }
                 is UiEvent.ShowToast -> Unit
                 else -> Unit
             }
@@ -70,7 +76,7 @@ fun TaskListScreen(
                     Text(text = "New Task", color = Color.White)
                 }
             }, onClick = {
-                onNavigate(CreateTaskScreenDestination)
+                onNavigate(CreateTaskScreenDestination())
             })
         }
     ) {
@@ -89,7 +95,8 @@ fun TaskListScreen(
                     LazyColumn(modifier = Modifier.padding(SpaceSmall)) {
                         items(pagingState.items.size) { i ->
                             val currentTask = pagingState.items[i]
-                            Timber.tag("LazyColumn").d("TaskListScreen : Task $i status ${currentTask.status}")
+                            Timber.tag("LazyColumn")
+                                .d("TaskListScreen : Task $i status ${currentTask.status}")
                             if (i >= pagingState.items.size - 1 && !pagingState.endReached && !pagingState.isLoading) {
                                 viewModel.loadNextTodos()
                             }
@@ -98,8 +105,11 @@ fun TaskListScreen(
                                 onCheckedChange = {
                                     viewModel.onEvent(TaskListEvent.TaskCheckedChange(currentTask.id))
                                 },
+                                onDelete = {
+                                    viewModel.onEvent(TaskListEvent.TaskDelete(currentTask.id))
+                                },
                                 onUpdate = {
-                                    onNavigate(CreateTaskScreenDestination)
+                                    onNavigate(CreateTaskScreenDestination(taskId = currentTask.id))
                                 }
                             )
                         }

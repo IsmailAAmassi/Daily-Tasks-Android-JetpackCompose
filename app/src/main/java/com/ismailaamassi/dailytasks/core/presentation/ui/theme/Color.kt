@@ -11,3 +11,8 @@ val SecondaryColor = Color(0xffF8952E)
 val TextColor = Color.Unspecified/*Color(0xFF000000)*/
 
 val CheckedColor = Color.LightGray/*.copy(alpha = 0.8f)*/
+
+val DEFAULT_PRIORITY = TextColor
+val LOW_PRIORITY = Color(0xFF388E3C)
+val MEDIUM_PRIORITY = Color(0xFFF57C00)
+val HIGH_PRIORITY = Color(0xFFD32F2F)

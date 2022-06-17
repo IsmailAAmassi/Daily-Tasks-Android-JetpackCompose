@@ -94,7 +94,7 @@ class RegisterViewModel @Inject constructor(
                 when (registerResult.result) {
                     is Resource.Success -> {
                         eventFlow.emit(
-                            UiEvent.ShowToast(UiText.StringResource(R.string.create_account_successfully))
+                            UiEvent.ShowToast(UiText.StringResource(R.string.successfully_create_account))
                         )
                         delay(100)
                         eventFlow.emit(UiEvent.PopBackStack)

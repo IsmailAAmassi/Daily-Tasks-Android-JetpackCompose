@@ -26,12 +26,14 @@ import com.ismailaamassi.dailytasks.feature_task.presentation.util.TaskError
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 
 @Destination
 @Composable
 fun CreateTaskScreen(
     scaffoldState: ScaffoldState,
     navigator: DestinationsNavigator,
+    taskId: String = "",
     viewModel: CreateTaskViewModel = hiltViewModel(),
     onPopBackStack: () -> Unit = {
         navigator.popBackStack()
@@ -45,6 +47,7 @@ fun CreateTaskScreen(
     val context = LocalContext.current
 
     LaunchedEffect(key1 = true) {
+        if (taskId.isNotEmpty()) viewModel.loadTaskData(taskId)
         viewModel.eventFlow.collectLatest { uiEvent ->
             when (uiEvent) {
                 is UiEvent.PopBackStack -> onPopBackStack()
@@ -70,9 +73,16 @@ fun CreateTaskScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center,
         ) {
+            Timber.tag("CreateTaskScreen.kt").d("JC:: CreateTaskScreen : taskId $taskId")
+
+            val titleId = if (taskId.isEmpty()) {
+                R.string.screen_create_task
+            } else {
+                R.string.screen_update_task
+            }
 
             Text(
-                text = stringResource(id = R.string.screen_create_task),
+                text = stringResource(id = titleId),
                 style = MaterialTheme.typography.h1
             )
 

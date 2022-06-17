@@ -4,7 +4,7 @@
     <string name="screen_login">Login</string>
     <string name="screen_register">Register</string>
     <string name="screen_create_task">Create New Task</string>
-    <string name="screen_update_task">Update New Task</string>
+    <string name="screen_update_task">Update Task</string>
 
     <string name="btn_create">Create</string>
 
@@ -39,6 +39,7 @@
     <string name="error_not_a_valid_password">This is not a valid password</string>
 
 
-    <string name="create_account_successfully">Created Account Successfully</string>
+    <string name="successfully_create_account">Successfully created account</string>
+    <string name="successfully_deleted_post">Successfully deleted task</string>
 
 </resources>

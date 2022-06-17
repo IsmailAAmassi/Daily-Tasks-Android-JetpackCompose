@@ -5,14 +5,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ismailaamassi.dailytasks.R
 import com.ismailaamassi.dailytasks.core.presentation.PagingState
 import com.ismailaamassi.dailytasks.core.util.Event
+import com.ismailaamassi.dailytasks.core.util.Resource
 import com.ismailaamassi.dailytasks.core.util.UiEvent
+import com.ismailaamassi.dailytasks.core.util.UiText
 import com.ismailaamassi.dailytasks.core.util.paginator.DefaultPaginator
 import com.ismailaamassi.dailytasks.core.util.task_checker.TaskChecker
 import com.ismailaamassi.dailytasks.feature_task.data.local.TaskData
-import com.ismailaamassi.dailytasks.feature_task.domain.use_case.ChangeCheckTaskUseCase
-import com.ismailaamassi.dailytasks.feature_task.domain.use_case.GetTasksUseCase
+import com.ismailaamassi.dailytasks.feature_task.domain.use_case.TaskUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -21,9 +23,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TaskListViewModel @Inject constructor(
-    private val getTasksUseCase: GetTasksUseCase,
-    private val changeCheckTaskUseCase: ChangeCheckTaskUseCase,
-    private val taskChecker: TaskChecker
+    private val taskUseCases: TaskUseCases,
+    private val taskChecker: TaskChecker,
 ) : ViewModel() {
 
 
@@ -32,6 +33,11 @@ class TaskListViewModel @Inject constructor(
     var pagingState by mutableStateOf<PagingState<TaskData>>(PagingState())
         private set
 
+    var state by mutableStateOf(TaskListState())
+        private set
+
+    private var recentlyDeletedTask: TaskData? = null
+
     private val paginator = DefaultPaginator(
         onLoadUpdated = { isLoading ->
             pagingState = pagingState.copy(
@@ -39,7 +45,7 @@ class TaskListViewModel @Inject constructor(
             )
         },
         onRequest = { page ->
-            getTasksUseCase(page = page)
+            taskUseCases.getTasksUseCase(page = page)
         },
         onSuccess = { posts ->
             pagingState = pagingState.copy(
@@ -71,10 +77,59 @@ class TaskListViewModel @Inject constructor(
                 toggleTaskChecked(event.taskId)
             }
             is TaskListEvent.TaskDelete -> {
-
+                deleteTask(event.taskId)
             }
             is TaskListEvent.TaskUpdate -> {
 
+            }
+            is TaskListEvent.TaskRestore -> {
+                restoreRecentlyDeletedTask()
+            }
+        }
+    }
+
+    private fun restoreRecentlyDeletedTask() {
+        viewModelScope.launch {
+            recentlyDeletedTask?.let {
+                when(val result = taskUseCases.restoreTaskUseCase(it)){
+                    is Resource.Success -> {
+                        // TODO: Insert it to list before null it
+                        recentlyDeletedTask = null
+                    }
+                    is Resource.Error -> {
+                        eventFlow.emit(
+                            UiEvent.ShowSnackbar(result.uiText ?: UiText.unknownError())
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun deleteTask(taskId: String) {
+        viewModelScope.launch {
+            when (val result = taskUseCases.deleteTaskUseCase(taskId)) {
+                is Resource.Success -> {
+                    pagingState = pagingState.copy(
+                        items = pagingState.items.filter {
+                            it.id != taskId
+                        }
+                    )
+                    recentlyDeletedTask = result.data
+                    eventFlow.emit(
+                        UiEvent.ShowSnackbar(
+                            UiText.StringResource(
+                                R.string.successfully_deleted_post
+                            ),
+                            action = "Undo"
+                        )
+                    )
+                }
+                is Resource.Error -> {
+                    eventFlow.emit(
+                        UiEvent.ShowSnackbar(result.uiText ?: UiText.unknownError())
+                    )
+                }
             }
         }
     }
@@ -85,7 +140,7 @@ class TaskListViewModel @Inject constructor(
                 tasks = pagingState.items,
                 taskId = taskId,
                 onRequest = { isChecked ->
-                    changeCheckTaskUseCase(
+                    taskUseCases.changeCheckTaskUseCase(
                         taskId = taskId,
                         isChecked = isChecked,
                     )

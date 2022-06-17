@@ -67,7 +67,8 @@ class MainActivity : ComponentActivity() {
                             composable(CreateTaskScreenDestination) {
                                 CreateTaskScreen(
                                     scaffoldState = scaffoldState,
-                                    navigator = destinationsNavigator
+                                    navigator = destinationsNavigator,
+                                    taskId = this.navArgs.taskId
                                 )
                             }
                         }
@@ -75,18 +76,5 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!", fontSize = 30.sp, fontFamily = FontFamily.Monospace)
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    DailyTasksTheme {
-        Greeting("Android")
     }
 }
