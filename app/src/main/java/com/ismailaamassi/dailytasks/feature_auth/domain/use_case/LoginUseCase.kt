@@ -20,15 +20,11 @@ class LoginUseCase(
 
 
         if (emailError != null || passwordError != null) {
-            val loginResult =  LoginResult(
+
+            return LoginResult(
                 emailError = emailError,
                 passwordError = passwordError
             )
-
-            Timber.tag("LoginUseCase").d("invoke : emailError $emailError")
-            Timber.tag("LoginUseCase").d("invoke : passwordError $passwordError")
-
-            return loginResult
         }
 
         val loginResult = authRepository.login(

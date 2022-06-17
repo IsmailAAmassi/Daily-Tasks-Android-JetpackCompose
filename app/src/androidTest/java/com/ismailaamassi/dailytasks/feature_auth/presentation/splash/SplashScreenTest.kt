@@ -32,7 +32,7 @@ class SplashScreenTest {
     }
 
     @Test
-    fun splashScreen_displayAndDisappears() = runBlockingTest{
+    fun `splashScreen_displayAndDisappears`() = runBlockingTest{
        /* composeTestRule.setContent {
             DailyTasksTheme {
                 SplashScreen()

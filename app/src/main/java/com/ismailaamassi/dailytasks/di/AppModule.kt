@@ -6,19 +6,26 @@ import android.content.SharedPreferences
 import androidx.room.Room
 import com.google.gson.Gson
 import com.ismailaamassi.dailytasks.core.data.DailyTaskDatabase
+import com.ismailaamassi.dailytasks.core.domain.repository.DataStoreRepository
 import com.ismailaamassi.dailytasks.core.util.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.bloco.faker.Faker
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
     @Provides
     @Singleton
     fun provideSharedPref(app: Application): SharedPreferences {
@@ -28,9 +35,18 @@ object AppModule {
         )
     }
 
+
     @Provides
     @Singleton
-    fun provideOkHttpClient(sharedPreferences: SharedPreferences): OkHttpClient {
+    fun provideOkHttpClient(
+        dataStoreRepository: DataStoreRepository,
+        sharedPreferences: SharedPreferences
+    ): OkHttpClient {
+        /*val r = runBlocking { dataStoreRepository.readLoggedUserToken() }
+        val token = r.map {
+            it
+        }*/
+
         return OkHttpClient.Builder()
             .addInterceptor {
                 val token = sharedPreferences.getString(Constants.KEY_JWT_TOKEN, "")
@@ -67,5 +83,11 @@ object AppModule {
     fun provideGson(): Gson {
         return Gson()
     }
+
+   /* @Provides
+    @Singleton
+    fun provideFaker(): Faker {
+        return Faker()
+    }*/
 
 }

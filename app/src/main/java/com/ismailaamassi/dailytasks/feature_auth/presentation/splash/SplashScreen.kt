@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ismailaamassi.dailytasks.R
 import com.ismailaamassi.dailytasks.core.util.UiEvent
-import com.ismailaamassi.dailytasks.feature_auth.presentation.destinations.DirectionDestination
+import com.ismailaamassi.dailytasks.destinations.DirectionDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator

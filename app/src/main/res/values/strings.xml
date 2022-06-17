@@ -1,20 +1,28 @@
 <resources>
     <string name="app_name">Daily Tasks</string>
-    <string name="login">Login</string>
-    <string name="register">Register</string>
+
+    <string name="screen_login">Login</string>
+    <string name="screen_register">Register</string>
+    <string name="screen_create_task">Create New Task</string>
+    <string name="screen_update_task">Update New Task</string>
+
+    <string name="btn_create">Create</string>
 
     <string name="password_visible_content_description">Hide password</string>
     <string name="password_hidden_content_description">Show password</string>
 
-    <string name="error_field_empty">This field can\'t be empty</string>
 
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="username">Username</string>
 
-    <string name="email_hint">Enter your email</string>
-    <string name="password_hint">Enter your Password</string>
-    <string name="username_hint">Enter your Password</string>
+    <string name="hint_task_title">Title</string>
+    <string name="hint_task_description">Description</string>
+    <string name="hint_task_category">Category</string>
+
+    <string name="hint_email">Enter your email</string>
+    <string name="hint_password">Enter your Password</string>
+    <string name="hint_username">Enter your Name</string>
 
     <string name="login_forgot_password">Forgot password?</string>
     <string name="login_dont_have_account">Don\'t have an account? </string>
@@ -25,7 +33,10 @@
     <string name="error_couldnt_reach_server">\"Oops! Couldn\'t reach server. Check your internet connection.\"</string>
     <string name="error_oops_something_went_wrong">\"Oops! Something went wrong. Please try again.\"</string>
     <string name="error_unknown">Unknown error</string>
+    <string name="error_field_empty">This field can\'t be empty</string>
     <string name="error_input_too_short">The minimum length is %d</string>
     <string name="error_not_a_valid_email">This is not a valid email</string>
+    <string name="error_not_a_valid_password">This is not a valid password</string>
+    <string name="create_account_successfully">Created Account Successfully</string>
 
 </resources>

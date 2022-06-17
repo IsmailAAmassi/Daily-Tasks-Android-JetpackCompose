@@ -9,7 +9,7 @@ sealed class UiText {
 
     companion object {
         fun unknownError(): UiText {
-            return StringResource(R.string.login)
+            return StringResource(R.string.screen_login)
         }
     }
 }

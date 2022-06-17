@@ -66,6 +66,7 @@ android {
 
 dependencies {
     val composeVersion = "1.2.0-beta03"
+    val accompanistVersion = "0.24.2-alpha"
 
     implementation(AndroidX.coreKtx)
     implementation(AndroidX.appCompat)
@@ -146,6 +147,7 @@ dependencies {
     testImplementation("com.squareup.okhttp3:mockwebserver:4.9.1")
     testImplementation("io.mockk:mockk:1.10.5")
     testImplementation("org.robolectric:robolectric:4.5.1")
+//    testImplementation("com.github.blocoio:faker:1.2.9")
 
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.38.1")
     kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.40.5")
@@ -159,6 +161,7 @@ dependencies {
     androidTestImplementation("androidx.test:core-ktx:1.4.0")
     androidTestImplementation("com.squareup.okhttp3:mockwebserver:4.9.1")
     androidTestImplementation("io.mockk:mockk-android:1.10.5")
+//    androidTestImplementation("com.github.blocoio:faker:1.2.9")
 
     // Compose Nav Destinations
     implementation("io.github.raamcosta.compose-destinations:core:1.5.8-beta")
@@ -170,4 +173,18 @@ dependencies {
 
     // Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:2.4.2")
+
+    // DataStore Preferences
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    // Pager and Indicators - Accompanist
+    implementation("com.google.accompanist:accompanist-pager:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-pager-indicators:$accompanistVersion")
+
+    // Faker
+    implementation("com.github.blocoio:faker:1.2.9")
+
+    // Swipe
+    implementation("me.saket.swipe:swipe:1.0.0")
+
 }

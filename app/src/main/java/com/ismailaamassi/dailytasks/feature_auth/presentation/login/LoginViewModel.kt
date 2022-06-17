@@ -1,6 +1,5 @@
 package com.ismailaamassi.dailytasks.feature_auth.presentation.login
 
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,11 +11,8 @@ import com.ismailaamassi.dailytasks.core.util.UiText
 import com.ismailaamassi.dailytasks.feature_auth.domain.use_case.LoginUseCase
 import com.ismailaamassi.dailytasks.feature_auth.presentation.util.AuthError
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,17 +21,16 @@ class LoginViewModel @Inject constructor(
 ) : ViewModel() {
 
     var emailState = mutableStateOf(StandardTextFieldState())
-    private set
+        private set
 
     var passwordState = mutableStateOf(PasswordTextFieldState())
-    private set
+        private set
 
     var loginState = mutableStateOf(LoginState())
-    private set
+        private set
 
-    private val _eventFlow = MutableSharedFlow<UiEvent>()
-    var eventFlow = _eventFlow.asSharedFlow()
-
+    var eventFlow = MutableSharedFlow<UiEvent>()
+        private set
 
     fun onEvent(event: LoginEvent) {
         when (event) {
@@ -62,7 +57,6 @@ class LoginViewModel @Inject constructor(
             passwordState.value = passwordState.value.copy(error = null)
 
             loginState.value = loginState.value.copy(isLoading = true)
-            delay(500)
             val loginResult = loginUseCase(
                 email = emailState.value.text,
                 password = passwordState.value.text
@@ -89,13 +83,9 @@ class LoginViewModel @Inject constructor(
 
             loginResult.result?.let {
                 when (loginResult.result) {
-                    is Resource.Success -> {
-                        Timber.tag("LoginViewModel").d("login : loginResult Success")
-                        _eventFlow.emit(UiEvent.OnLogin)
-                    }
+                    is Resource.Success -> eventFlow.emit(UiEvent.OnLogin)
                     is Resource.Error -> {
-                        Timber.tag("LoginViewModel").d("login : loginResult Error")
-                        _eventFlow.emit(
+                        eventFlow.emit(
                             UiEvent.ShowSnackbar(
                                 loginResult.result.message ?: UiText.unknownError()
                             )
