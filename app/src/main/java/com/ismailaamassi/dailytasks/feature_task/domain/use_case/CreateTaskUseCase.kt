@@ -5,7 +5,7 @@ import com.ismailaamassi.dailytasks.feature_task.domain.model.CreateTaskResult
 import com.ismailaamassi.dailytasks.feature_task.domain.repository.TaskRepository
 
 class CreateTaskUseCase(
-    private val taskRepository: TaskRepository
+    private val repository: TaskRepository
 ) {
 
     suspend operator fun invoke(
@@ -37,7 +37,7 @@ class CreateTaskUseCase(
             )
         }
 
-        val createTaskResult = taskRepository.createTask(
+        val createTaskResult = repository.createTask(
             title = title,
             description = description,
             category = category,

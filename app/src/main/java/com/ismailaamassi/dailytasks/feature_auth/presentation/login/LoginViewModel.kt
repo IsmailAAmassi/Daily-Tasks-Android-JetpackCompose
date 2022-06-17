@@ -87,7 +87,7 @@ class LoginViewModel @Inject constructor(
                     is Resource.Error -> {
                         eventFlow.emit(
                             UiEvent.ShowSnackbar(
-                                loginResult.result.message ?: UiText.unknownError()
+                                loginResult.result.uiText ?: UiText.unknownError()
                             )
                         )
                     }

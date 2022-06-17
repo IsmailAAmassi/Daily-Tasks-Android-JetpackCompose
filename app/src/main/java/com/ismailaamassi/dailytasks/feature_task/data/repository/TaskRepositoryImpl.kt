@@ -6,6 +6,7 @@ import com.ismailaamassi.dailytasks.core.domain.repository.DataStoreRepository
 import com.ismailaamassi.dailytasks.core.util.Resource
 import com.ismailaamassi.dailytasks.core.util.SimpleResource
 import com.ismailaamassi.dailytasks.core.util.UiText
+import com.ismailaamassi.dailytasks.feature_task.data.local.TaskData
 import com.ismailaamassi.dailytasks.feature_task.data.remote.TaskApi
 import com.ismailaamassi.dailytasks.feature_task.data.remote.request.CreateTaskRequest
 import com.ismailaamassi.dailytasks.feature_task.domain.repository.TaskRepository
@@ -16,7 +17,7 @@ import javax.inject.Singleton
 
 @Singleton
 class TaskRepositoryImpl @Inject constructor(
-    private val taskApi: TaskApi,
+    private val api: TaskApi,
     private val dataStoreRepository: DataStoreRepository,
     private val sharedPreferences: SharedPreferences
 ) : TaskRepository {
@@ -30,7 +31,7 @@ class TaskRepositoryImpl @Inject constructor(
     ): SimpleResource {
         val request = CreateTaskRequest(title, description, category, priority, time)
         return try {
-            val response = taskApi.createTask(request)
+            val response = api.createTask(request)
             if (response.successful) {
                 Resource.Success(Unit)
             } else {
@@ -38,6 +39,24 @@ class TaskRepositoryImpl @Inject constructor(
                     Resource.Error(uiText = UiText.DynamicString(msg))
                 } ?: Resource.Error(uiText = UiText.StringResource(R.string.error_unknown))
             }
+        } catch (e: IOException) {
+            Resource.Error(
+                uiText = UiText.StringResource(R.string.error_couldnt_reach_server)
+            )
+        } catch (e: HttpException) {
+            Resource.Error(
+                uiText = UiText.StringResource(R.string.error_oops_something_went_wrong)
+            )
+        }
+    }
+
+    override suspend fun getTasks(page: Int, pageSize: Int): Resource<List<TaskData>> {
+        return try {
+            val posts = api.getTasks(
+                page = page,
+                pageSize = pageSize
+            )
+            Resource.Success(data = posts.data)
         } catch (e: IOException) {
             Resource.Error(
                 uiText = UiText.StringResource(R.string.error_couldnt_reach_server)

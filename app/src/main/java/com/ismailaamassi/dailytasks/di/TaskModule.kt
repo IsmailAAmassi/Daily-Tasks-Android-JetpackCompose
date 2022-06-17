@@ -9,6 +9,7 @@ import com.ismailaamassi.dailytasks.feature_task.data.remote.TaskApi
 import com.ismailaamassi.dailytasks.feature_task.data.repository.TaskRepositoryImpl
 import com.ismailaamassi.dailytasks.feature_task.domain.repository.TaskRepository
 import com.ismailaamassi.dailytasks.feature_task.domain.use_case.CreateTaskUseCase
+import com.ismailaamassi.dailytasks.feature_task.domain.use_case.GetTasksUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -47,6 +48,12 @@ object TaskModule {
     @Singleton
     fun provideCreateTaskUseCase(repository: TaskRepository): CreateTaskUseCase {
         return CreateTaskUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetTasksUseCase(repository: TaskRepository): GetTasksUseCase {
+        return GetTasksUseCase(repository)
     }
 
 }

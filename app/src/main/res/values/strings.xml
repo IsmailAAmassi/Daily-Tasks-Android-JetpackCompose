@@ -37,6 +37,8 @@
     <string name="error_input_too_short">The minimum length is %d</string>
     <string name="error_not_a_valid_email">This is not a valid email</string>
     <string name="error_not_a_valid_password">This is not a valid password</string>
+
+
     <string name="create_account_successfully">Created Account Successfully</string>
 
 </resources>

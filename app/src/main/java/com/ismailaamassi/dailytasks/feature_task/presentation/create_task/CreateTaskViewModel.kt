@@ -94,7 +94,7 @@ class CreateTaskViewModel @Inject constructor(
                     is Resource.Error -> {
                         eventFlow.emit(
                             UiEvent.ShowSnackbar(
-                                createTaskResult.result.message ?: UiText.unknownError()
+                                createTaskResult.result.uiText ?: UiText.unknownError()
                             )
                         )
                     }

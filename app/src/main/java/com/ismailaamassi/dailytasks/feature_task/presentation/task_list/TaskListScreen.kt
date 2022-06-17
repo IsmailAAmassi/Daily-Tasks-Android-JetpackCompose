@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -38,6 +39,7 @@ fun TaskListScreen(
     onNavigate: (DirectionDestination) -> Unit = { navigator.navigate(it) }
 ) {
 
+    val pagingState = viewModel.pagingState.value
     val context = LocalContext.current
 
     val fakeTasks = mutableListOf<TaskData>()
@@ -102,8 +104,25 @@ fun TaskListScreen(
 
                     LazyColumn(modifier = Modifier.padding(SpaceSmall)) {
                         items(fakeTasks.size) { i ->
-                            TaskItem(taskData = fakeTasks[i])
+//                            val currentTask = fakeTasks[i]
+                            val currentTask = pagingState.items[i]
+                            if (i >= pagingState.items.size - 1 && !pagingState.endReached && !pagingState.isLoading) {
+                                viewModel.loadNextTodos()
+                            }
+                            TaskItem(taskData = currentTask)
+                            if (i < pagingState.items.size - 1) {
+                                Spacer(modifier = Modifier.height(SpaceLarge))
+                            }
                         }
+                        item {
+                            Spacer(modifier = Modifier.height(SpaceLarge.times(3)))
+                        }
+                    }
+
+                    if (pagingState.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
                     }
                 }
             }
