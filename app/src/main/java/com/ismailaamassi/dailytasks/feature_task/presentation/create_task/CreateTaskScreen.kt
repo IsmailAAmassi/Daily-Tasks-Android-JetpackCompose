@@ -28,6 +28,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
+
 @Destination
 @Composable
 fun CreateTaskScreen(
@@ -39,15 +40,16 @@ fun CreateTaskScreen(
         navigator.popBackStack()
     },
 ) {
-    val titleState = viewModel.titleState.value
-    val descriptionState = viewModel.descriptionState.value
-    val categoryState = viewModel.categoryState.value
+    val titleState = viewModel.titleState
+    val descriptionState = viewModel.descriptionState
+    val categoryState = viewModel.categoryState
+
 
     val state = viewModel.createTaskState.value
     val context = LocalContext.current
 
     LaunchedEffect(key1 = true) {
-        if (taskId.isNotEmpty()) viewModel.loadTaskData(taskId)
+        if (taskId.isNotEmpty()) viewModel.loadTaskDetails(taskId)
         viewModel.eventFlow.collectLatest { uiEvent ->
             when (uiEvent) {
                 is UiEvent.PopBackStack -> onPopBackStack()
@@ -75,10 +77,18 @@ fun CreateTaskScreen(
         ) {
             Timber.tag("CreateTaskScreen.kt").d("JC:: CreateTaskScreen : taskId $taskId")
 
-            val titleId = if (taskId.isEmpty()) {
+            val isOpenForCreate = taskId.isEmpty()
+
+            val titleId = if (isOpenForCreate) {
                 R.string.screen_create_task
             } else {
                 R.string.screen_update_task
+            }
+
+            val buttonTextId = if (isOpenForCreate) {
+                R.string.btn_create
+            } else {
+                R.string.btn_update
             }
 
             Text(
@@ -90,6 +100,7 @@ fun CreateTaskScreen(
             StandardTextField(
                 text = categoryState.text,
                 hint = stringResource(id = R.string.hint_task_category),
+                label = stringResource(id = R.string.hint_task_category),
                 keyboardType = KeyboardType.Text,
                 onValueChange = {
                     viewModel.onEvent(CreateTaskEvent.EnteredCategory(it))
@@ -132,8 +143,12 @@ fun CreateTaskScreen(
 
 
             Spacer(modifier = Modifier.height(SpaceLarge))
-            StandardPrimaryButton(text = stringResource(id = R.string.btn_create)) {
-                viewModel.onEvent(CreateTaskEvent.CreateTask)
+            StandardPrimaryButton(text = stringResource(id = buttonTextId)) {
+                if (isOpenForCreate) {
+                    viewModel.onEvent(CreateTaskEvent.CreateTask)
+                } else {
+                    viewModel.onEvent(CreateTaskEvent.UpdateTask)
+                }
             }
 
             Spacer(modifier = Modifier.height(SpaceLarge))

@@ -7,5 +7,6 @@ sealed class CreateTaskEvent {
     data class EnteredPriority(val priority: Int) : CreateTaskEvent()
     data class EnteredTime(val time: Long) : CreateTaskEvent()
 
+    object UpdateTask : CreateTaskEvent()
     object CreateTask : CreateTaskEvent()
 }

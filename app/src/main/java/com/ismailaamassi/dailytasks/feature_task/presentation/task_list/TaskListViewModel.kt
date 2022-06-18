@@ -13,10 +13,13 @@ import com.ismailaamassi.dailytasks.core.util.UiEvent
 import com.ismailaamassi.dailytasks.core.util.UiText
 import com.ismailaamassi.dailytasks.core.util.paginator.DefaultPaginator
 import com.ismailaamassi.dailytasks.core.util.task_checker.TaskChecker
+import com.ismailaamassi.dailytasks.feature_profile.domain.use_case.LogoutUseCase
+import com.ismailaamassi.dailytasks.feature_profile.domain.use_case.ProfileDetailsUseCase
 import com.ismailaamassi.dailytasks.feature_task.data.local.TaskData
 import com.ismailaamassi.dailytasks.feature_task.domain.use_case.TaskUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -24,6 +27,8 @@ import javax.inject.Inject
 @HiltViewModel
 class TaskListViewModel @Inject constructor(
     private val taskUseCases: TaskUseCases,
+    private val profileDetailsUseCase: ProfileDetailsUseCase,
+    private val logoutUseCase: LogoutUseCase,
     private val taskChecker: TaskChecker,
 ) : ViewModel() {
 
@@ -60,9 +65,19 @@ class TaskListViewModel @Inject constructor(
     )
 
     init {
-        Timber.tag("TaskListViewModel").d("init : loadNextTodos")
+        loadProfileDetails()
         loadNextTodos()
     }
+
+    private fun loadProfileDetails() {
+        viewModelScope.launch {
+            val profileDetailsResult = profileDetailsUseCase.invoke()
+            profileDetailsResult.collectLatest { name ->
+                state = state.copy(username = name)
+            }
+        }
+    }
+
 
     fun loadNextTodos() {
         viewModelScope.launch {
@@ -85,13 +100,22 @@ class TaskListViewModel @Inject constructor(
             is TaskListEvent.TaskRestore -> {
                 restoreRecentlyDeletedTask()
             }
+            TaskListEvent.Logout -> {
+                logout()
+            }
+        }
+    }
+
+    private fun logout() {
+        viewModelScope.launch {
+            logoutUseCase()
         }
     }
 
     private fun restoreRecentlyDeletedTask() {
         viewModelScope.launch {
             recentlyDeletedTask?.let {
-                when(val result = taskUseCases.restoreTaskUseCase(it)){
+                when (val result = taskUseCases.restoreTaskUseCase(it)) {
                     is Resource.Success -> {
                         // TODO: Insert it to list before null it
                         recentlyDeletedTask = null

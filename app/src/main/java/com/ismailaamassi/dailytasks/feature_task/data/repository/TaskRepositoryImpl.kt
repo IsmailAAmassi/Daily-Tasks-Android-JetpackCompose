@@ -11,6 +11,7 @@ import com.ismailaamassi.dailytasks.feature_task.data.local.TaskData
 import com.ismailaamassi.dailytasks.feature_task.data.remote.TaskApi
 import com.ismailaamassi.dailytasks.feature_task.data.remote.request.CheckTaskRequest
 import com.ismailaamassi.dailytasks.feature_task.data.remote.request.CreateTaskRequest
+import com.ismailaamassi.dailytasks.feature_task.data.remote.request.UpdateTaskRequest
 import com.ismailaamassi.dailytasks.feature_task.domain.repository.TaskRepository
 import retrofit2.HttpException
 import java.io.IOException
@@ -156,11 +157,47 @@ class TaskRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateTask(taskId: String): SimpleResource {
-        TODO("Not yet implemented")
+    override suspend fun updateTask(
+        taskData: TaskData
+    ): SimpleResource {
+        return try {
+            val response = api.updateTask(taskData)
+            if (response.successful) {
+                Resource.Success(Unit)
+            } else {
+                response.message?.let { msg ->
+                    Resource.Error(uiText = UiText.DynamicString(msg))
+                } ?: Resource.Error(uiText = UiText.StringResource(R.string.error_unknown))
+            }
+        } catch (e: IOException) {
+            Resource.Error(
+                uiText = UiText.StringResource(R.string.error_couldnt_reach_server)
+            )
+        } catch (e: HttpException) {
+            Resource.Error(
+                uiText = UiText.StringResource(R.string.error_oops_something_went_wrong)
+            )
+        }
     }
 
-    override suspend fun getTask(taskId: String): SimpleResource {
-        TODO("Not yet implemented")
+    override suspend fun getTask(taskId: String): Resource<TaskData> {
+        return try {
+            val response = api.getTask(taskId)
+            if (response.successful) {
+                Resource.Success(response.data)
+            } else {
+                response.message?.let { msg ->
+                    Resource.Error(uiText = UiText.DynamicString(msg))
+                } ?: Resource.Error(uiText = UiText.StringResource(R.string.error_unknown))
+            }
+        } catch (e: IOException) {
+            Resource.Error(
+                uiText = UiText.StringResource(R.string.error_couldnt_reach_server)
+            )
+        } catch (e: HttpException) {
+            Resource.Error(
+                uiText = UiText.StringResource(R.string.error_oops_something_went_wrong)
+            )
+        }
     }
 }

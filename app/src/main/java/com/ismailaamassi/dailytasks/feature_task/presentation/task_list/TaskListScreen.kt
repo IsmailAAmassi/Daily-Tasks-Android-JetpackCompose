@@ -20,13 +20,13 @@ import com.ismailaamassi.dailytasks.core.presentation.ui.theme.SpaceSmall
 import com.ismailaamassi.dailytasks.core.presentation.util.asString
 import com.ismailaamassi.dailytasks.core.util.UiEvent
 import com.ismailaamassi.dailytasks.destinations.CreateTaskScreenDestination
+import com.ismailaamassi.dailytasks.destinations.LoginScreenDestination
 import com.ismailaamassi.dailytasks.feature_task.presentation.task_list.compnenets.ProfileSection
 import com.ismailaamassi.dailytasks.feature_task.presentation.task_list.compnenets.TaskItem
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.spec.Direction
 import kotlinx.coroutines.flow.collectLatest
-import timber.log.Timber
 
 //@Inject lateinit var faker: Faker
 
@@ -40,6 +40,7 @@ fun TaskListScreen(
     onNavigate: (Direction) -> Unit = { navigator.navigate(it) }
 ) {
 
+    val taskListState = viewModel.state
     val pagingState = viewModel.pagingState
     val context = LocalContext.current
 
@@ -53,7 +54,7 @@ fun TaskListScreen(
                         message = uiEvent.uiText.asString(context),
                         actionLabel = uiEvent.action
                     )
-                    if(actionClickResult == SnackbarResult.ActionPerformed) {
+                    if (actionClickResult == SnackbarResult.ActionPerformed) {
                         viewModel.onEvent(TaskListEvent.TaskRestore)
                     }
                 }
@@ -61,6 +62,7 @@ fun TaskListScreen(
                 else -> Unit
             }
         }
+
     }
 
     Scaffold(
@@ -90,13 +92,13 @@ fun TaskListScreen(
                     .padding(bottom = SpaceLarge),
             ) {
                 Column {
-                    ProfileSection(name = "Coach")
-
+                    ProfileSection(name = taskListState.username, onClickLogout = {
+                        viewModel.onEvent(TaskListEvent.Logout)
+                        onNavigate(LoginScreenDestination)
+                    })
                     LazyColumn(modifier = Modifier.padding(SpaceSmall)) {
                         items(pagingState.items.size) { i ->
                             val currentTask = pagingState.items[i]
-                            Timber.tag("LazyColumn")
-                                .d("TaskListScreen : Task $i status ${currentTask.status}")
                             if (i >= pagingState.items.size - 1 && !pagingState.endReached && !pagingState.isLoading) {
                                 viewModel.loadNextTodos()
                             }

@@ -88,7 +88,7 @@ object ValidationUtil {
         return null
     }
 
-    fun validateTaskDescription(description: String): TaskError? {
+    fun validateTaskDescription(description: String?): TaskError? {
         /*val trimmedDescription = description.trim()
         if (trimmedDescription.isBlank()) {
             return TaskError.FieldEmpty

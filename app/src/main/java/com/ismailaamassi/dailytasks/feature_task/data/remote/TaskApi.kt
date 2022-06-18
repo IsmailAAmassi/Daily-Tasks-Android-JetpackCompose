@@ -1,6 +1,7 @@
 package com.ismailaamassi.dailytasks.feature_task.data.remote
 
 import com.ismailaamassi.dailytasks.core.data.dto.BasicApiResponse
+import com.ismailaamassi.dailytasks.core.util.Constants
 import com.ismailaamassi.dailytasks.feature_task.data.local.TaskData
 import com.ismailaamassi.dailytasks.feature_task.data.remote.request.CheckTaskRequest
 import com.ismailaamassi.dailytasks.feature_task.data.remote.request.CreateTaskRequest
@@ -9,38 +10,38 @@ import retrofit2.http.*
 
 interface TaskApi {
 
-    @POST("tasks")
+    @POST("${Constants.API_KEY}/${Constants.API_VERSION}/tasks")
     suspend fun createTask(
         @Body request: CreateTaskRequest
     ): BasicApiResponse<Unit>
 
-    @POST("tasks/restore")
+    @POST("${Constants.API_KEY}/${Constants.API_VERSION}/tasks/restore")
     suspend fun restoreTask(
         @Body taskData: TaskData
     ): BasicApiResponse<Unit>
 
-    @GET("tasks")
+    @GET("${Constants.API_KEY}/${Constants.API_VERSION}/tasks")
     suspend fun getTasks(
         @Query("page") page: Int,
         @Query("pageSize") pageSize: Int
     ): List<TaskData>
 
-    @PUT("tasks")
+    @PUT("${Constants.API_KEY}/${Constants.API_VERSION}/tasks")
     suspend fun updateTask(
-        @Body request: UpdateTaskRequest
+        @Body taskData: TaskData
     ): BasicApiResponse<Unit>
 
-    @PUT("tasks/check")
+    @PUT("${Constants.API_KEY}/${Constants.API_VERSION}/tasks/check")
     suspend fun checkTask(
         @Body request: CheckTaskRequest
     ): BasicApiResponse<Unit>
 
-    @POST("tasks/{taskId}")
+    @GET("${Constants.API_KEY}/${Constants.API_VERSION}/tasks/{taskId}")
     suspend fun getTask(
         @Path("taskId") taskId: String
-    ): BasicApiResponse<Unit>
+    ): BasicApiResponse<TaskData>
 
-    @DELETE("tasks/{taskId}")
+    @DELETE("${Constants.API_KEY}/${Constants.API_VERSION}/tasks/{taskId}")
     suspend fun deleteTask(
         @Path("taskId") taskId: String
     ): BasicApiResponse<TaskData>

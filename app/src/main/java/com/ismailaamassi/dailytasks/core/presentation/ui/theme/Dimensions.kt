@@ -2,6 +2,7 @@ package com.ismailaamassi.dailytasks.core.presentation.ui.theme
 
 import androidx.compose.ui.unit.dp
 
+val SpaceTint = 4.dp
 val SpaceSmall = 8.dp
 val SpaceMedium = 16.dp
 val SpaceLarge = 24.dp

@@ -51,6 +51,7 @@ object TaskModule {
             createTaskUseCase = CreateTaskUseCase(repository = repository),
             deleteTaskUseCase = DeleteTaskUseCase(repository = repository),
             getTasksUseCase = GetTasksUseCase(repository = repository),
+            getTaskDetailsUseCase = GetTaskDetailsUseCase(repository = repository),
             restoreTaskUseCase = RestoreTaskUseCase(repository = repository),
             updateTaskUseCase = UpdateTaskUseCase(repository = repository)
         )

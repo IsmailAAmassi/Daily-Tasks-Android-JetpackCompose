@@ -58,10 +58,11 @@ class AuthRepositoryImpl @Inject constructor(
                     sharedPreferences.edit()
                         .putString(Constants.KEY_JWT_TOKEN, authResponse.token)
                         .putString(Constants.KEY_USER_ID, authResponse.userId)
-                        .putString(Constants.KEY_USER_NAME, authResponse.username)
+                        .putString(Constants.KEY_USER_NAME, authResponse.userName)
                         .apply()
 
                     dataStoreRepository.saveLoggedUserToken(authResponse.token)
+                    dataStoreRepository.saveLoggedUserName(authResponse.userName)
                     dataStoreRepository.saveLoggedUserId(authResponse.userId)
                 }
                 Resource.Success(Unit)

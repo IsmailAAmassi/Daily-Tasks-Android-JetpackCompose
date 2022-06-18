@@ -1,7 +1,8 @@
 package com.ismailaamassi.dailytasks.feature_task.presentation.create_task
 
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ismailaamassi.dailytasks.core.domain.states.StandardTextFieldState
@@ -18,18 +19,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateTaskViewModel @Inject constructor(
-    private val taskUseCase: TaskUseCases,
+    private val taskUseCases: TaskUseCases,
 ) : ViewModel() {
 
-    var titleState = mutableStateOf(StandardTextFieldState())
+    var titleState by mutableStateOf(StandardTextFieldState())
         private set
-    var descriptionState = mutableStateOf(StandardTextFieldState())
+    var descriptionState by mutableStateOf(StandardTextFieldState())
         private set
-    var categoryState = mutableStateOf(StandardTextFieldState())
+    var categoryState by mutableStateOf(StandardTextFieldState())
         private set
 
-    var currentTask = MutableSharedFlow<TaskData>()
-        private set
+    private var currentTask : TaskData? = null
 
     var createTaskState = mutableStateOf(CreateTaskState(isLoading = false))
 
@@ -39,49 +39,53 @@ class CreateTaskViewModel @Inject constructor(
     fun onEvent(event: CreateTaskEvent) {
         when (event) {
             is CreateTaskEvent.EnteredTitle -> {
-                titleState.value = titleState.value.copy(text = event.title)
+                titleState = titleState.copy(text = event.title)
             }
             is CreateTaskEvent.EnteredDescription -> {
-                descriptionState.value = descriptionState.value.copy(text = event.description)
+                descriptionState = descriptionState.copy(text = event.description)
             }
             is CreateTaskEvent.EnteredCategory -> {
-                categoryState.value = categoryState.value.copy(text = event.category)
+                categoryState = categoryState.copy(text = event.category)
             }
             is CreateTaskEvent.EnteredPriority -> Unit
             is CreateTaskEvent.EnteredTime -> Unit
             is CreateTaskEvent.CreateTask -> {
                 createTask()
             }
+            is CreateTaskEvent.UpdateTask -> {
+                updateTask()
+            }
         }
     }
 
     private fun createTask() {
         viewModelScope.launch {
-            titleState.value = titleState.value.copy(error = null)
-            descriptionState.value = descriptionState.value.copy(error = null)
-            categoryState.value = categoryState.value.copy(error = null)
+            titleState = titleState.copy(error = null)
+            descriptionState = descriptionState.copy(error = null)
+            categoryState = categoryState.copy(error = null)
 
             createTaskState.value = createTaskState.value.copy(isLoading = true)
-            val createTaskResult = taskUseCase.createTaskUseCase(
-                title = titleState.value.text,
-                description = descriptionState.value.text,
-                category = categoryState.value.text,
+            val createTaskResult = taskUseCases.createTaskUseCase(
+                title = titleState.text,
+                description = descriptionState.text,
+                category = categoryState.text,
                 priority = 1,
                 time = -1,
             )
+            createTaskState.value = createTaskState.value.copy(isLoading = false)
 
             if (createTaskResult.titleError != null) {
-                titleState.value = titleState.value.copy(error = createTaskResult.titleError)
+                titleState = titleState.copy(error = createTaskResult.titleError)
             }
 
             if (createTaskResult.categoryError != null) {
-                categoryState.value =
-                    categoryState.value.copy(error = createTaskResult.categoryError)
+                categoryState =
+                    categoryState.copy(error = createTaskResult.categoryError)
             }
 
             if (createTaskResult.descriptionError != null) {
-                descriptionState.value =
-                    descriptionState.value.copy(error = createTaskResult.descriptionError)
+                descriptionState =
+                    descriptionState.copy(error = createTaskResult.descriptionError)
             }
 
             if (createTaskResult.priorityError != null) {
@@ -105,13 +109,87 @@ class CreateTaskViewModel @Inject constructor(
                 }
             }
 
-            createTaskState.value = createTaskState.value.copy(isLoading = false)
         }
     }
 
-    fun loadTaskData(taskId: String) {
+    private fun updateTask() {
+        if (currentTask == null){
+            return
+        }
         viewModelScope.launch {
+            titleState = titleState.copy(error = null)
+            descriptionState = descriptionState.copy(error = null)
+            categoryState = categoryState.copy(error = null)
 
+            createTaskState.value = createTaskState.value.copy(isLoading = true)
+
+            val createTaskResult = taskUseCases.updateTaskUseCase(
+                currentTask!!.copy(
+                    title = titleState.text,
+                    description = descriptionState.text,
+                    category = categoryState.text,
+                )
+            )
+            createTaskState.value = createTaskState.value.copy(isLoading = false)
+
+            if (createTaskResult.titleError != null) {
+                titleState = titleState.copy(error = createTaskResult.titleError)
+            }
+
+            if (createTaskResult.categoryError != null) {
+                categoryState =
+                    categoryState.copy(error = createTaskResult.categoryError)
+            }
+
+            if (createTaskResult.descriptionError != null) {
+                descriptionState =
+                    descriptionState.copy(error = createTaskResult.descriptionError)
+            }
+
+            if (createTaskResult.priorityError != null) {
+                Timber.tag("CreateTaskViewModel").d("onCreateTask : Not Implemented Yet !!")
+            }
+
+            if (createTaskResult.timeError != null) {
+                Timber.tag("CreateTaskViewModel").d("onCreateTask : Not Implemented Yet !!")
+            }
+
+            createTaskResult.result?.let {
+                when (createTaskResult.result) {
+                    is Resource.Success -> eventFlow.emit(UiEvent.PopBackStack)
+                    is Resource.Error -> {
+                        eventFlow.emit(
+                            UiEvent.ShowSnackbar(
+                                createTaskResult.result.uiText ?: UiText.unknownError()
+                            )
+                        )
+                    }
+                }
+            }
+
+        }
+    }
+
+    suspend fun loadTaskDetails(taskId: String) {
+        Timber.tag("CreateTaskViewModel").d("loadTaskDetails : ")
+        createTaskState.value = createTaskState.value.copy(isLoading = true)
+        val result = taskUseCases.getTaskDetailsUseCase(taskId)
+        createTaskState.value = createTaskState.value.copy(isLoading = false)
+        Timber.tag("CreateTaskViewModel.kt").d("JC:: loadTaskDetails : result $result")
+        when (result) {
+            is Resource.Success -> {
+                result.data?.let { task ->
+                    currentTask = task
+                    titleState = titleState.copy(text = task.title)
+                    descriptionState = descriptionState.copy(text = task.description ?: "")
+                    categoryState = categoryState.copy(text = task.category)
+                }
+            }
+            is Resource.Error -> {
+                eventFlow.emit(
+                    UiEvent.ShowSnackbar(result.uiText ?: UiText.unknownError())
+                )
+            }
         }
     }
 }

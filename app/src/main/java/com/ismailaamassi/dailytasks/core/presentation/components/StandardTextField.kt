@@ -1,9 +1,7 @@
 package com.ismailaamassi.dailytasks.core.presentation.components
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -24,11 +22,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import com.ismailaamassi.dailytasks.R
 import com.ismailaamassi.dailytasks.core.presentation.ui.theme.IconSizeMedium
 import com.ismailaamassi.dailytasks.core.presentation.ui.theme.Shapes
-import timber.log.Timber
+import com.ismailaamassi.dailytasks.core.presentation.ui.theme.SpaceTint
 
+@Preview(showBackground = true)
 @Composable
 fun StandardTextField(
     modifier: Modifier = Modifier,
@@ -41,6 +41,7 @@ fun StandardTextField(
         color = MaterialTheme.colors.onBackground
     ),
     backgroundColor: Color = MaterialTheme.colors.surface,
+    labelColor: Color = MaterialTheme.colors.onBackground,
     singleLine: Boolean = true,
     maxLines: Int = 1,
     leadingIcon: ImageVector? = null,
@@ -52,14 +53,16 @@ fun StandardTextField(
     onValueChange: (String) -> Unit,
     focusRequester: FocusRequester = FocusRequester()
 ) {
-    Timber.tag("").d("StandardTextField : text $text")
-    Timber.tag("").d("StandardTextField : error $error")
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .then(modifier)
     ) {
-
+           /* if (label.isNotEmpty()) {
+                Text(text = label, style = MaterialTheme.typography.subtitle2, color = labelColor)
+                Spacer(modifier = Modifier.height(SpaceTint))
+            }*/
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth()
@@ -77,7 +80,7 @@ fun StandardTextField(
             textStyle = style,
             shape = Shapes.medium,
             colors = TextFieldDefaults.textFieldColors(backgroundColor = backgroundColor),
-            placeholder = {
+            label = {
                 Text(
                     text = hint,
                     style = MaterialTheme.typography.body1

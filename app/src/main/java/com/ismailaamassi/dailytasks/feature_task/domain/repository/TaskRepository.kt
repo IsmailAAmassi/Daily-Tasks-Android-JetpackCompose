@@ -24,6 +24,10 @@ interface TaskRepository {
     suspend fun uncheckTask(taskId: String): SimpleResource
 
     suspend fun deleteTask(taskId: String): Resource<TaskData>
-    suspend fun updateTask(taskId: String): SimpleResource
-    suspend fun getTask(taskId: String): SimpleResource
+
+    suspend fun updateTask(
+        taskData: TaskData
+    ): SimpleResource
+
+    suspend fun getTask(taskId: String): Resource<TaskData>
 }

@@ -4,10 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
@@ -20,15 +17,15 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ismailaamassi.dailytasks.core.presentation.ui.theme.SecondaryColor
 import com.ismailaamassi.dailytasks.core.presentation.ui.theme.Shapes
-import com.ismailaamassi.dailytasks.core.presentation.ui.theme.SpaceLarge
 import com.ismailaamassi.dailytasks.core.presentation.ui.theme.SpaceMedium
 
 
-@Preview
 @Composable
 fun ProfileSection(
-    name: String = ""
+    name: String = "",
+    onClickLogout: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -36,15 +33,13 @@ fun ProfileSection(
         backgroundColor = Color.LightGray.copy(alpha = 0.5f),
         shape = Shapes.large.copy(topStart = CornerSize(0), topEnd = CornerSize(0.dp))
     ) {
-        Column {
-            Spacer(modifier = Modifier.width(SpaceLarge))
-            Spacer(modifier = Modifier.width(SpaceLarge))
-            Spacer(modifier = Modifier.width(SpaceLarge))
+        Row(
+            modifier = Modifier.padding(SpaceMedium),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
 
-            Row(
-                modifier = Modifier.padding(SpaceMedium),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Row {
                 Box(
                     modifier = Modifier
                         .size(64.dp)
@@ -86,10 +81,13 @@ fun ProfileSection(
                 }
             }
 
-            Spacer(modifier = Modifier.width(SpaceLarge))
-            Spacer(modifier = Modifier.width(SpaceLarge))
-            Spacer(modifier = Modifier.width(SpaceLarge))
+            TextButton(
+                onClick = onClickLogout,
+            ) {
+                Text(text = "Logout", color = SecondaryColor)
 
+            }
         }
+
     }
 }

@@ -14,6 +14,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
@@ -43,25 +45,27 @@ object AppModule {
         val token = r.map {
             it
         }*/
-
-        return OkHttpClient.Builder()
-            .addInterceptor {
-                val token = sharedPreferences.getString(Constants.KEY_JWT_TOKEN, "")
-                val modifiedRequest = it.request().newBuilder()
-                    .addHeader("Authorization", "Bearer $token")
-                    .build()
-                it.proceed(modifiedRequest)
-            }
-            .addInterceptor(
-                HttpLoggingInterceptor()
-                    .apply {
-                        level = HttpLoggingInterceptor.Level.BODY
-                    }
-            )
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(10, TimeUnit.SECONDS)
-            .build()
+        val r = /*withContext(Dispatchers.IO) {*/
+            OkHttpClient.Builder()
+                .addInterceptor {
+                    val token = sharedPreferences.getString(Constants.KEY_JWT_TOKEN, "")
+                    val modifiedRequest = it.request().newBuilder()
+                        .addHeader("Authorization", "Bearer $token")
+                        .build()
+                    it.proceed(modifiedRequest)
+                }
+                .addInterceptor(
+                    HttpLoggingInterceptor()
+                        .apply {
+                            level = HttpLoggingInterceptor.Level.BODY
+                        }
+                )
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .build()
+        /*}*/
+        return r
     }
 
 

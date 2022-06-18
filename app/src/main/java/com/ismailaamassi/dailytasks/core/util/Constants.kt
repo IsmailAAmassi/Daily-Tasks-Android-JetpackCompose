@@ -15,6 +15,7 @@ object Constants {
 
     const val DEFAULT_PAGE_SIZE: Int = 5
 
-    const val BASE_URL = "http://192.168.1.42:8080"
-    const val API_VERSION = ""
+    const val BASE_URL = "http://192.168.1.181:8080"
+    const val API_KEY = "api"
+    const val API_VERSION = "v1"
 }

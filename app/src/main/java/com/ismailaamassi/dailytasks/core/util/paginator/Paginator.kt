@@ -1,4 +1,4 @@
-package com.plcoding.socialnetworktwitch.core.util
+package com.ismailaamassi.dailytasks.core.util.paginator
 
 interface Paginator<T> {
 

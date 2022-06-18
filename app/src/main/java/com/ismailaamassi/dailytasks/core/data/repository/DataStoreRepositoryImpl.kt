@@ -6,9 +6,11 @@ import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import com.ismailaamassi.dailytasks.core.domain.repository.DataStoreRepository
 import com.ismailaamassi.dailytasks.core.util.Constants
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -20,6 +22,7 @@ private val Context.dataStore by preferencesDataStore(
 private object PreferencesKeys {
     val ON_BOARDING_KEY = booleanPreferencesKey(name = "on_boarding_completed")
     val USER_ID_KEY = stringPreferencesKey(name = "user_id")
+    val USER_NAME_KEY = stringPreferencesKey(name = "user_name")
     val USER_TOKEN_KEY = stringPreferencesKey(name = "user_token")
 }
 
@@ -71,6 +74,27 @@ class DataStoreRepositoryImpl @Inject constructor(
             }
     }
 
+    override suspend fun saveLoggedUserName(userName: String) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.USER_NAME_KEY] = userName
+        }
+    }
+
+    override suspend fun readLoggedUserName(): Flow<String> {
+        return dataStore.data
+            .catch { exception ->
+                if (exception is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+            }
+            .map { preferences ->
+                val userName = preferences[PreferencesKeys.USER_NAME_KEY] ?: ""
+                userName
+            }
+    }
+
     override suspend fun saveLoggedUserToken(token: String) {
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.USER_TOKEN_KEY] = token
@@ -92,4 +116,7 @@ class DataStoreRepositoryImpl @Inject constructor(
             }
     }
 
+    override suspend fun clearData() {
+
+    }
 }

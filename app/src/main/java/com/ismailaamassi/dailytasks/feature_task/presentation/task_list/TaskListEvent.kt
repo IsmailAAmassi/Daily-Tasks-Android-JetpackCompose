@@ -6,4 +6,5 @@ sealed class TaskListEvent {
     data class TaskCheckedChange(val taskId: String) : TaskListEvent()
     object TaskRestore : TaskListEvent()
     object NavCreateTask : TaskListEvent()
+    object Logout : TaskListEvent()
 }
