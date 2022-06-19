@@ -137,7 +137,7 @@ dependencies {
 //    implementation("com.github.yalantis:ucrop:2.2.8")
 
     // Local Unit Tests
-    implementation("androidx.test:core:1.4.0")
+    testImplementation("androidx.test:core:1.4.0")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.hamcrest:hamcrest-all:1.3")
     testImplementation("androidx.arch.core:core-testing:2.1.0")

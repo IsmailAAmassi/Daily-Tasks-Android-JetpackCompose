@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 import androidx.room.Room
 import com.google.gson.Gson
 import com.ismailaamassi.dailytasks.core.data.DailyTaskDatabase
-import com.ismailaamassi.dailytasks.core.domain.repository.DataStoreRepository
+import com.ismailaamassi.dailytasks.core.domain.repository.SessionManagerRepository
 import com.ismailaamassi.dailytasks.core.util.Constants
 import com.ismailaamassi.dailytasks.core.util.task_checker.DefaultTaskChecker
 import com.ismailaamassi.dailytasks.core.util.task_checker.TaskChecker
@@ -14,8 +14,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
@@ -38,7 +36,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(
-        dataStoreRepository: DataStoreRepository,
+        sessionManagerRepository: SessionManagerRepository,
         sharedPreferences: SharedPreferences
     ): OkHttpClient {
         /*val r = runBlocking { dataStoreRepository.readLoggedUserToken() }

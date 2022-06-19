@@ -1,6 +1,6 @@
 package com.ismailaamassi.dailytasks.di
 
-import com.ismailaamassi.dailytasks.core.domain.repository.DataStoreRepository
+import com.ismailaamassi.dailytasks.core.domain.repository.SessionManagerRepository
 import com.ismailaamassi.dailytasks.core.util.Constants
 import com.ismailaamassi.dailytasks.feature_profile.data.remote.ProfileApi
 import com.ismailaamassi.dailytasks.feature_profile.data.repository.ProfileRepositoryImpl
@@ -39,8 +39,8 @@ object ProfileModule {
     @Provides
     @Singleton
     fun provideProfileDetailsUseCase(
-        dataStoreRepository: DataStoreRepository,
+        sessionManagerRepository: SessionManagerRepository,
     ): ProfileDetailsUseCase {
-        return ProfileDetailsUseCase(dataStoreRepository)
+        return ProfileDetailsUseCase(sessionManagerRepository)
     }
 }

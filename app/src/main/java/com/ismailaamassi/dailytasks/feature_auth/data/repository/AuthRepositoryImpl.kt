@@ -2,7 +2,7 @@ package com.ismailaamassi.dailytasks.feature_auth.data.repository
 
 import android.content.SharedPreferences
 import com.ismailaamassi.dailytasks.R
-import com.ismailaamassi.dailytasks.core.domain.repository.DataStoreRepository
+import com.ismailaamassi.dailytasks.core.domain.repository.SessionManagerRepository
 import com.ismailaamassi.dailytasks.core.util.Constants
 import com.ismailaamassi.dailytasks.core.util.Resource
 import com.ismailaamassi.dailytasks.core.util.SimpleResource
@@ -19,7 +19,7 @@ import javax.inject.Singleton
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
     private val authApi: AuthApi,
-    private val dataStoreRepository: DataStoreRepository,
+    private val sessionManagerRepository: SessionManagerRepository,
     private val sharedPreferences: SharedPreferences
 ) : AuthRepository {
 
@@ -61,9 +61,9 @@ class AuthRepositoryImpl @Inject constructor(
                         .putString(Constants.KEY_USER_NAME, authResponse.userName)
                         .apply()
 
-                    dataStoreRepository.saveLoggedUserToken(authResponse.token)
-                    dataStoreRepository.saveLoggedUserName(authResponse.userName)
-                    dataStoreRepository.saveLoggedUserId(authResponse.userId)
+                    sessionManagerRepository.saveLoggedUserToken(authResponse.token)
+                    sessionManagerRepository.saveLoggedUserName(authResponse.userName)
+                    sessionManagerRepository.saveLoggedUserId(authResponse.userId)
                 }
                 Resource.Success(Unit)
             } else {

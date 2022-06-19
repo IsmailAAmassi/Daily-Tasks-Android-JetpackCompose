@@ -1,7 +1,7 @@
 package com.ismailaamassi.dailytasks.di
 
 import android.content.SharedPreferences
-import com.ismailaamassi.dailytasks.core.domain.repository.DataStoreRepository
+import com.ismailaamassi.dailytasks.core.domain.repository.SessionManagerRepository
 import com.ismailaamassi.dailytasks.core.util.Constants
 import com.ismailaamassi.dailytasks.feature_auth.data.remote.AuthApi
 import com.ismailaamassi.dailytasks.feature_auth.data.repository.AuthRepositoryImpl
@@ -38,10 +38,10 @@ object AuthModule {
     @Singleton
     fun provideAuthRepository(
         api: AuthApi,
-        dataStoreRepository: DataStoreRepository,
+        sessionManagerRepository: SessionManagerRepository,
         sharedPreferences: SharedPreferences
     ): AuthRepository {
-        return AuthRepositoryImpl(api, dataStoreRepository, sharedPreferences)
+        return AuthRepositoryImpl(api, sessionManagerRepository, sharedPreferences)
     }
 
     @Provides

@@ -2,7 +2,7 @@ package com.ismailaamassi.dailytasks.core.domain.repository
 
 import kotlinx.coroutines.flow.Flow
 
-interface DataStoreRepository {
+interface SessionManagerRepository {
     suspend fun saveOnBoardingState(completed: Boolean)
     suspend fun readOnBoardingState(): Flow<Boolean>
 

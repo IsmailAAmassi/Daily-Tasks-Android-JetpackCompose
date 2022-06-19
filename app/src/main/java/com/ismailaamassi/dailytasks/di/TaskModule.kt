@@ -2,7 +2,7 @@ package com.ismailaamassi.dailytasks.di
 
 import android.content.SharedPreferences
 import com.google.gson.Gson
-import com.ismailaamassi.dailytasks.core.domain.repository.DataStoreRepository
+import com.ismailaamassi.dailytasks.core.domain.repository.SessionManagerRepository
 import com.ismailaamassi.dailytasks.core.util.Constants
 import com.ismailaamassi.dailytasks.feature_task.data.remote.TaskApi
 import com.ismailaamassi.dailytasks.feature_task.data.repository.TaskRepositoryImpl
@@ -37,10 +37,10 @@ object TaskModule {
     fun provideTaskRepository(
         api: TaskApi,
         gson: Gson,
-        dataStoreRepository: DataStoreRepository,
+        sessionManagerRepository: SessionManagerRepository,
         sharedPreferences: SharedPreferences
     ): TaskRepository {
-        return TaskRepositoryImpl(api, gson, dataStoreRepository, sharedPreferences)
+        return TaskRepositoryImpl(api, gson, sessionManagerRepository, sharedPreferences)
     }
 
     @Provides

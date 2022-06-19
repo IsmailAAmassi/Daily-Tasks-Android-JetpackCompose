@@ -4,13 +4,11 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
-import com.ismailaamassi.dailytasks.core.domain.repository.DataStoreRepository
+import com.ismailaamassi.dailytasks.core.domain.repository.SessionManagerRepository
 import com.ismailaamassi.dailytasks.core.util.Constants
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -27,10 +25,10 @@ private object PreferencesKeys {
 }
 
 @Singleton
-class DataStoreRepositoryImpl @Inject constructor(
+class SessionManagerRepositoryImpl @Inject constructor(
     private val context: Context,
     private val dataStore: DataStore<Preferences> = context.dataStore
-) : DataStoreRepository {
+) : SessionManagerRepository {
 
     override suspend fun saveOnBoardingState(completed: Boolean) {
         dataStore.edit { preferences ->
@@ -117,6 +115,8 @@ class DataStoreRepositoryImpl @Inject constructor(
     }
 
     override suspend fun clearData() {
-
+        dataStore.edit {
+            it.clear()
+        }
     }
 }

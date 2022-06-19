@@ -3,7 +3,7 @@ package com.ismailaamassi.dailytasks.feature_task.data.repository
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.ismailaamassi.dailytasks.R
-import com.ismailaamassi.dailytasks.core.domain.repository.DataStoreRepository
+import com.ismailaamassi.dailytasks.core.domain.repository.SessionManagerRepository
 import com.ismailaamassi.dailytasks.core.util.Resource
 import com.ismailaamassi.dailytasks.core.util.SimpleResource
 import com.ismailaamassi.dailytasks.core.util.UiText
@@ -11,7 +11,6 @@ import com.ismailaamassi.dailytasks.feature_task.data.local.TaskData
 import com.ismailaamassi.dailytasks.feature_task.data.remote.TaskApi
 import com.ismailaamassi.dailytasks.feature_task.data.remote.request.CheckTaskRequest
 import com.ismailaamassi.dailytasks.feature_task.data.remote.request.CreateTaskRequest
-import com.ismailaamassi.dailytasks.feature_task.data.remote.request.UpdateTaskRequest
 import com.ismailaamassi.dailytasks.feature_task.domain.repository.TaskRepository
 import retrofit2.HttpException
 import java.io.IOException
@@ -22,7 +21,7 @@ import javax.inject.Singleton
 class TaskRepositoryImpl @Inject constructor(
     private val api: TaskApi,
     private val gson: Gson,
-    private val dataStoreRepository: DataStoreRepository,
+    private val sessionManagerRepository: SessionManagerRepository,
     private val sharedPreferences: SharedPreferences
 ) : TaskRepository {
     override suspend fun createTask(
