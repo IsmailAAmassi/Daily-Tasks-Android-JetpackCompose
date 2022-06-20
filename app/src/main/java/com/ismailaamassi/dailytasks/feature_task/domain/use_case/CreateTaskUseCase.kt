@@ -4,6 +4,14 @@ import com.ismailaamassi.dailytasks.core.domain.util.ValidationUtil
 import com.ismailaamassi.dailytasks.feature_task.domain.model.CreateTaskResult
 import com.ismailaamassi.dailytasks.feature_task.domain.repository.TaskRepository
 
+/**
+ * This useCase will return Error if ...
+ * ...the title,category are empty
+ * ...the priority less than 1 or more than 3
+ * ...the time is older the current time
+ * ...the server throw HttpException
+ * ...the server throw IOException
+ * */
 class CreateTaskUseCase(
     private val repository: TaskRepository
 ) {

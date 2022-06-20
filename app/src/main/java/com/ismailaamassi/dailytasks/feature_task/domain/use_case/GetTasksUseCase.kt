@@ -5,6 +5,11 @@ import com.ismailaamassi.dailytasks.core.util.Resource
 import com.ismailaamassi.dailytasks.feature_task.data.local.TaskData
 import com.ismailaamassi.dailytasks.feature_task.domain.repository.TaskRepository
 
+/**
+ * This useCase will be Error if ...
+ * ...throw IOException
+ * ...throw HttpException
+ **/
 class GetTasksUseCase(
     private val repository: TaskRepository
 ) {
