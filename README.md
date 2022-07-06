@@ -14,8 +14,9 @@ An android application developed using Jetpack Compose
 - Kotlin Gradle
 
 ## Sceenshots
-![Screenshot_1657127446](https://user-images.githubusercontent.com/32588971/177608221-8821525b-3fbf-4570-82e4-bea77f7f007c.png | width=100px)
-![Screenshot_1657127430](https://user-images.githubusercontent.com/32588971/177608214-a53b66c5-f4b6-4076-996a-991823d58d5b.png | width=100px)
-![Screenshot_1657127424](https://user-images.githubusercontent.com/32588971/177608207-f94e91cd-95fb-4fc4-8b4d-b413cc95d9f3.png | width=100px)
-![Screenshot_1657127398](https://user-images.githubusercontent.com/32588971/177608197-6b0af34f-4faa-41ee-8b9b-60e9f6c41fdb.png | width=100)
-![Screenshot_1657128198](https://user-images.githubusercontent.com/32588971/177608190-b2172600-724b-411e-a925-6f10febe08ef.png | width=100)
+<img src="[https://your-image-url.type](https://user-images.githubusercontent.com/32588971/177608221-8821525b-3fbf-4570-82e4-bea77f7f007c.png)" width="600">
+<!-- ![Screenshot_1657127446](https://user-images.githubusercontent.com/32588971/177608221-8821525b-3fbf-4570-82e4-bea77f7f007c.png | width=100px) -->
+<!-- ![Screenshot_1657127430](https://user-images.githubusercontent.com/32588971/177608214-a53b66c5-f4b6-4076-996a-991823d58d5b.png | width=100px) -->
+<!-- ![Screenshot_1657127424](https://user-images.githubusercontent.com/32588971/177608207-f94e91cd-95fb-4fc4-8b4d-b413cc95d9f3.png | width=100px)
+![Screenshot_1657127398](https://user-images.githubusercontent.com/32588971/177608197-6b0af34f-4faa-41ee-8b9b-60e9f6c41fdb.png | width=100) -->
+<!-- ![Screenshot_1657128198](https://user-images.githubusercontent.com/32588971/177608190-b2172600-724b-411e-a925-6f10febe08ef.png | width=100) -->
